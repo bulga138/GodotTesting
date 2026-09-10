@@ -6,7 +6,6 @@ on:
       - master
     paths:
       - 'docs/**'
-      - 'game/**'
       - '.github/workflows/docs.yml'
   workflow_dispatch:
 
@@ -20,23 +19,14 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Setup Godot
-        run: |
-          curl -L -o godot.zip https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
-          unzip godot.zip
-          chmod +x Godot_v4.7.2-stable_linux.x86_64
-
-      - name: Generate quality dashboard
-        run: |
-          python game/tools/ci/generate_report.py \
-            --godot ./Godot_v4.7.2-stable_linux.x86_64 \
-            --out docs/testing/dashboard.html
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -44,15 +34,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./docs/testing
+          path: ./docs
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
