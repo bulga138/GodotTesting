@@ -11,7 +11,7 @@
 
 This is the bridge between the business-level [Quality Policy](00-quality-policy.md) and the engineering-level [Technical Testing Standard](02-technical-testing-standard.md). It explains **what each layer of testing protects against**, in conceptual terms, without requiring knowledge of specific tools or code.
 
-Read this if you need to understand coverage, risk, or where a given test belongs — but not if you need to write one. For writing tests, see the [Implementation Guide](03-implementation-guide.md).
+Read this if you need to understand coverage, risk, or where a given test belongs, but not if you need to write one. For writing tests, see the [Implementation Guide](03-implementation-guide.md).
 
 ---
 
@@ -34,7 +34,7 @@ Testing in a game engine is organized into five layers. Each layer protects agai
           /---------------------\
 ```
 
-### Level 1 — Static Validation
+### Level 1. Static Validation
 
 **Protects against:** Broken file references, missing assets, corrupt data files, untranslated strings, unreachable narrative branches.
 
@@ -48,11 +48,11 @@ Testing in a game engine is organized into five layers. Each layer protects agai
 
 ---
 
-### Level 2 — Isolated Logic
+### Level 2. Isolated Logic
 
 **Protects against:** Incorrect math, broken inventory rules, failed data conversions, state aggregation errors.
 
-**Plain-language description:** "We test the rules of the game — damage formulas, crafting outcomes, inventory stacking — as pure logic, without loading any scenes."
+**Plain-language description:** "We test the rules of the game (damage formulas, crafting outcomes, inventory stacking) as pure logic, without loading any scenes."
 
 **When it runs:** On every change.
 
@@ -62,7 +62,7 @@ Testing in a game engine is organized into five layers. Each layer protects agai
 
 ---
 
-### Level 3 — Component & Scene Integration
+### Level 3. Component & Scene Integration
 
 **Protects against:** Characters that move incorrectly, menus that do not pause the world, hotspots that fail to respond, physics that behaves unexpectedly.
 
@@ -76,11 +76,11 @@ Testing in a game engine is organized into five layers. Each layer protects agai
 
 ---
 
-### Level 4 — Visual Regression
+### Level 4. Visual Regression
 
 **Protects against:** Unintended visual changes from shader edits, lighting adjustments, theme changes, or UI layout drift.
 
-**Plain-language description:** "We take a picture of each screen and compare it to an approved reference. If anything changed, we are told — even if the change was subtle."
+**Plain-language description:** "We take a picture of each screen and compare it to an approved reference. If anything changed, we are told, even if the change was subtle."
 
 **When it runs:** At milestones and merges to the main branch.
 
@@ -90,7 +90,7 @@ Testing in a game engine is organized into five layers. Each layer protects agai
 
 ---
 
-### Level 5 — Complete Player Journeys
+### Level 5. Complete Player Journeys
 
 **Protects against:** Puzzle soft-locks, narrative dead-ends, save/load corruption, broken scene transitions, and any failure that only appears when a real player moves through the game.
 
@@ -119,11 +119,11 @@ The goal is not to test everything at every layer. The goal is to place each tes
 
 | Layer              | Coverage Expectation                             |
 | ------------------ | ------------------------------------------------ |
-| 1 — Static         | All assets, all scenes, all translations         |
-| 2 — Isolated Logic | All deterministic rules and formulas             |
-| 3 — Integration    | Every character, menu, and interactive component |
-| 4 — Visual         | Every screen and major visual state              |
-| 5 — Journeys       | Every golden path and critical user flow         |
+| 1. Static         | All assets, all scenes, all translations         |
+| 2. Isolated Logic | All deterministic rules and formulas             |
+| 3. Integration    | Every character, menu, and interactive component |
+| 4. Visual         | Every screen and major visual state              |
+| 5. Journeys       | Every golden path and critical user flow         |
 
 Coverage is not measured as a single percentage. Each layer has its own scope, and completeness means "every item in scope has at least one test."
 

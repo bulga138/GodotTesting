@@ -5,7 +5,7 @@
 **Status:** Procedural guide
 **Companion documents:** [02 Technical Testing Standard](02-technical-testing-standard.md), [04 CI/CD & Tooling Reference](04-ci-cd-tooling-reference.md), [05 Onboarding Playbook](05-onboarding-playbook.md)
 
-> This document shows **how** to satisfy the rules in Document 02. It contains patterns, recipes, and directory structures — not normative requirements. If a rule here conflicts with Document 02, Document 02 wins.
+> This document shows **how** to satisfy the rules in Document 02. It contains patterns, recipes, and directory structures, not normative requirements. If a rule here conflicts with Document 02, Document 02 wins.
 
 ---
 
@@ -34,7 +34,7 @@ project/
 
 ---
 
-## 2. Level 1 — Static Audits
+## 2. Level 1. Static Audits
 
 ### 2.1 Asset Import Validation
 
@@ -127,7 +127,7 @@ sys.exit(1 if failed else 0)
 
 ---
 
-## 3. Level 2 — Unit Logic
+## 3. Level 2. Unit Logic
 
 ### 3.1 Suite Structure
 
@@ -170,15 +170,15 @@ Cover Vector2/3/4, Rect2, Transform2D/3D, Basis, Quaternion, Color, NodePath.
 
 ### 3.4 Save Integrity & Migration
 
-Save files are the most common source of "works on my machine" bugs in shipped games. Test them at the unit level, not at the E2E level — the failure modes are deterministic and cheap to isolate.
+Save files are the most common source of "works on my machine" bugs in shipped games. Test them at the unit level, not at the E2E level: the failure modes are deterministic and cheap to isolate.
 
 **Coverage checklist:**
 
-1. **Checksum validation** — reject tampered or truncated saves
-2. **Version field enforcement** — reject unknown future versions; migrate known past versions
-3. **Migration path** — every shipped version has a fixture; v1 → v2 → latest preserves semantic state
-4. **Corrupt-file handling** — graceful failure with a typed error, never a crash
-5. **Round-trip parity** — save on latest, load on latest, assert deep equality
+1. **Checksum validation**: reject tampered or truncated saves
+2. **Version field enforcement**: reject unknown future versions; migrate known past versions
+3. **Migration path**: every shipped version has a fixture; v1 → v2 → latest preserves semantic state
+4. **Corrupt-file handling**: graceful failure with a typed error, never a crash
+5. **Round-trip parity**: save on latest, load on latest, assert deep equality
 
 ```gdscript
 # res://tests/unit/test_save_migration.gd
@@ -213,9 +213,7 @@ func test_unknown_future_version_rejected() -> void:
 
 ---
 
----
-
-## 4. Level 3 — Scene Integration
+## 4. Level 3. Scene Integration
 
 ### 4.1 The Movement Fixture
 
@@ -281,7 +279,7 @@ Test explicitly: while a modal is open, `ui_down` must not move the player.
 
 ---
 
-## 5. Level 4 — Visual Regression
+## 5. Level 4. Visual Regression
 
 ### 5.1 Local Capture
 
@@ -344,7 +342,7 @@ Visual regression catches unintended _changes_; accessibility checks catch _unus
 
 ---
 
-## 6. Level 5 — E2E BDD
+## 6. Level 5. E2E BDD
 
 ### 6.1 Screen Objects
 
@@ -430,31 +428,31 @@ Every MUST/SHOULD rule in Document 02 has a corresponding "what not to do." Each
 ### A1. Wall-Clock Timers
 
 ```gdscript
-# WRONG — depends on OS scheduling; subject to Engine.time_scale
+# WRONG: depends on OS scheduling; subject to Engine.time_scale
 await get_tree().create_timer(1.0).timeout
 
-# RIGHT — deterministic, frame-based
+# RIGHT: deterministic, frame-based
 await runner.simulate_frames(60)
 ```
 
 ### A2. Manual Teardown Frees
 
 ```gdscript
-# WRONG — deferred free leaks across suite boundaries
+# WRONG: deferred free leaks across suite boundaries
 func after_test() -> void:
     my_node.queue_free()
 
-# RIGHT — auto_free registers cleanup with the test lifecycle
+# RIGHT: auto_free registers cleanup with the test lifecycle
 var my_node := auto_free(Node.new())
 ```
 
 ### A3. Unseeded Randomness
 
 ```gdscript
-# WRONG — test outcome depends on run order
+# WRONG: test outcome depends on run order
 var damage := randi_range(1, 100)
 
-# RIGHT — deterministic
+# RIGHT: deterministic
 seed(12345)
 var damage := randi_range(1, 100)
 ```
@@ -464,11 +462,11 @@ For E2E tests, call `POST /dev/seed {"seed": 12345}` before the scenario.
 ### A4. Direct Resource Mutation
 
 ```gdscript
-# WRONG — mutates the ResourceLoader cache; pollutes later tests
+# WRONG: mutates the ResourceLoader cache; pollutes later tests
 var stats := load("res://data/player_stats.tres")
 stats.base_health = 999
 
-# RIGHT — deep copy before mutation
+# RIGHT: deep copy before mutation
 var stats := load("res://data/player_stats.tres").duplicate(true)
 stats.base_health = 999
 ```
@@ -478,63 +476,63 @@ See Policy 2 in Document 02 for the `PackedScene` exception.
 ### A5. Signal Watches Without Registration
 
 ```gdscript
-# WRONG — no registration; assertion has nothing to inspect
+# WRONG: no registration; assertion has nothing to inspect
 button.pressed.connect(_on_pressed)
 assert_signal_emitted(button, "pressed")  # fails
 
-# RIGHT — use SceneRunner's wait helper
+# RIGHT: use SceneRunner's wait helper
 await runner.await_signal_on(button, "pressed", [], 1000)
 ```
 
 ### A6. Coordinate Clicks in Gherkin
 
 ```gherkin
-# WRONG — brittle; breaks on any layout change
+# WRONG: brittle; breaks on any layout change
 When I click at position 640, 360
 
-# RIGHT — stable across refactors
+# RIGHT: stable across refactors
 When I click the element with test_id "start_button"
 ```
 
 ### A7. Sleep in Step Definitions
 
 ```javascript
-# WRONG — slow and flaky
+# WRONG: slow and flaky
 await new Promise(r => setTimeout(r, 2000));
 await driver.assertVisible('test_id:main_menu');
 
-// RIGHT — auto-retry polls until deadline
+// RIGHT: auto-retry polls until deadline
 await driver.assertVisible('test_id:main_menu', { timeout: 3000 });
 ```
 
 ### A8. Testing Production Rooms
 
 ```gdscript
-# WRONG — test depends on production geometry
+# WRONG: test depends on production geometry
 var runner := scene_runner("res://scenes/levels/workshop.tscn")
 
-# RIGHT — calibrated fixture
+# RIGHT: calibrated fixture
 var runner := scene_runner("res://tests/fixtures/movement_test_map.tscn")
 ```
 
 ### A9. Local GPU Baselines
 
 ```bash
-# WRONG — captured on developer's Vulkan GPU; will fail in software CI
+# WRONG: captured on developer's Vulkan GPU; will fail in software CI
 godot --rendering-driver vulkan  # then commit baselines/
 
-# RIGHT — same driver as CI
+# RIGHT: same driver as CI
 xvfb-run --auto-servernum godot --rendering-driver opengl3 --test-driver
 ```
 
 ### A10. Asserting Before Frame Advance
 
 ```gdscript
-# WRONG — input delivered but not yet processed by _physics_process
+# WRONG: input delivered but not yet processed by _physics_process
 runner.simulate_action_press("jump")
 assert_bool(player.is_jumping)  # fails
 
-# RIGHT — advance the frame, then assert
+# RIGHT: advance the frame, then assert
 runner.simulate_action_press("jump")
 await runner.await_input_processed()
 await runner.simulate_frames(1)

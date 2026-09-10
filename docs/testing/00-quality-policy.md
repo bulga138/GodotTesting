@@ -9,19 +9,19 @@
 
 ## 1. Why We Test
 
-Every hour of manual playtesting that a machine can perform is an hour returned to design, art, and narrative. Manual QA cannot scale across an 18-room game with 3 temporal states, dozens of item combinations, and a branching puzzle graph. Automated testing does not replace human judgment — it protects it from being spent on regressions.
+Every hour of manual playtesting that a machine can perform is an hour returned to design, art, and narrative. Manual QA cannot scale across an 18-room game with 3 temporal states, dozens of item combinations, and a branching puzzle graph. Automated testing does not replace human judgment; it protects it from being spent on regressions.
 
 Automated testing exists to answer three questions before a build reaches a player:
 
-1. **Does the game still run?** — Can it launch, load its data, and complete its golden path?
-2. **Does the game still behave correctly?** — Do the rules, math, and interactions produce the intended outcomes?
-3. **Does the game still look correct?** — Have any visual changes occurred that were not intended?
+1. **Does the game still run?** Can it launch, load its data, and complete its golden path?
+2. **Does the game still behave correctly?** Do the rules, math, and interactions produce the intended outcomes?
+3. **Does the game still look correct?** Have any visual changes occurred that were not intended?
 
 If any of these questions is answered "no," the build does not ship.
 
 ### Why This Stack
 
-We standardize on Godot's native test ecosystem rather than importing patterns from Unity or Unreal. The rationale is simple: our engine is Godot, our language is GDScript, and our CI is Node.js-based. A Unity-style C# harness would add a second runtime; an Unreal-style C++ harness would add a build step. The stack we chose — GdUnit4 for in-engine tests, `@godriver` for external end-to-end tests — runs on the same toolchain the team already uses daily.
+We standardize on Godot's native test ecosystem rather than importing patterns from Unity or Unreal. The rationale is simple: our engine is Godot, our language is GDScript, and our CI is Node.js-based. A Unity-style C# harness would add a second runtime; an Unreal-style C++ harness would add a build step. The stack we chose (GdUnit4 for in-engine tests, `@godriver` for external end-to-end tests) runs on the same toolchain the team already uses daily.
 
 If you are evaluating this policy against prior experience on other engines: the pyramid structure, determinism rules, and CI gates are engine-agnostic. The tool names are Godot-specific. The principles transfer; the commands do not.
 
@@ -61,7 +61,7 @@ If you are evaluating this policy against prior experience on other engines: the
 
 ### For every milestone
 
-- The full golden path — from new game to ending — completes cleanly in an automated end-to-end run.
+- The full golden path (from new game to ending) completes cleanly in an automated end-to-end run.
 - All screens and major visual states match their approved baselines.
 - No known flaky tests remain in the suite.
 

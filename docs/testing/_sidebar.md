@@ -1,12 +1,12 @@
 - [Home](/)
 - Quality Policy
-  - [00 — Quality Policy](00-quality-policy.md)
+  - [00. Quality Policy](00-quality-policy.md)
 - Strategy
-  - [01 — Testing Strategy Overview](01-testing-strategy-overview.md)
+  - [01. Testing Strategy Overview](01-testing-strategy-overview.md)
 - Standards
-  - [02 — Technical Testing Standard](02-technical-testing-standard.md)
+  - [02. Technical Testing Standard](02-technical-testing-standard.md)
 - Guides
-  - [03 — Implementation Guide](03-implementation-guide.md)
-  - [05 — Onboarding Playbook](05-onboarding-playbook.md)
+  - [03. Implementation Guide](03-implementation-guide.md)
+  - [05. Onboarding Playbook](05-onboarding-playbook.md)
 - Operations
-  - [04 — CI/CD & Tooling Reference](04-ci-cd-tooling-reference.md)
+  - [04. CI/CD & Tooling Reference](04-ci-cd-tooling-reference.md)

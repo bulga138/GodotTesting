@@ -15,7 +15,7 @@ This is the documentation hub for the game's automated testing strategy, standar
 
 ## Where to Start
 
-- **New to the project?** Start with [05 — Onboarding Playbook](05-onboarding-playbook.md).
-- **Need to write a test?** Read [03 — Implementation Guide](03-implementation-guide.md).
-- **Setting up CI?** See [04 — CI/CD & Tooling Reference](04-ci-cd-tooling-reference.md).
-- **Need the rules?** Read [02 — Technical Testing Standard](02-technical-testing-standard.md).
+- **New to the project?** Start with [05. Onboarding Playbook](05-onboarding-playbook.md).
+- **Need to write a test?** Read [03. Implementation Guide](03-implementation-guide.md).
+- **Setting up CI?** See [04. CI/CD & Tooling Reference](04-ci-cd-tooling-reference.md).
+- **Need the rules?** Read [02. Technical Testing Standard](02-technical-testing-standard.md).

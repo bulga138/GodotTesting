@@ -18,7 +18,7 @@ Four jobs run in sequence. Each job gates the next.
 | `static-and-schemas`        | 1     | ubuntu-latest        | Every PR                                |
 | `unit-and-integration`      | 2 & 3 | ubuntu-latest        | Every PR                                |
 | `e2e-and-visual-regression` | 4 & 5 | ubuntu-latest + xvfb | Main branch, or PR with `run-e2e` label |
-| `release-gate`              | —     | ubuntu-latest        | Tagged releases only                    |
+| `release-gate`              | none | ubuntu-latest        | Tagged releases only                    |
 
 ---
 
@@ -158,7 +158,7 @@ jobs:
 | --------------- | -------- | --------------------------------------------- |
 | `godot-version` | required | Must match project floor                      |
 | `paths`         | required | Comma-separated test directories              |
-| `arguments`     | —        | Extra CLI args (e.g., `-v`)                   |
+| `arguments`     | none | Extra CLI args (e.g., `-v`)                   |
 | `retries`       | `0`      | Retry count; set to `1` for diagnostic flakes |
 
 ### GdUnit4 CLI Runner (`GdUnitCmdTool.gd`)
@@ -182,7 +182,7 @@ jobs:
 
 ## 6. Failure Triage Guide
 
-### Level 1 — Static
+### Level 1. Static
 
 | Symptom                               | Likely Cause                        | Action                       |
 | ------------------------------------- | ----------------------------------- | ---------------------------- |
@@ -192,7 +192,7 @@ jobs:
 | Locale expansion > 35%                | Text overflow risk                  | Shorten string or widen UI   |
 | DAG solver reports unreachable ending | Narrative dead-end                  | Fix puzzle graph             |
 
-### Level 2 & 3 — GdUnit4
+### Level 2 & 3. GdUnit4
 
 | Symptom                   | Likely Cause                           | Action                                           |
 | ------------------------- | -------------------------------------- | ------------------------------------------------ |
@@ -201,7 +201,7 @@ jobs:
 | Flaky physics assertion   | Insufficient frame settling            | Add `simulate_frames(n)`                         |
 | `FLAKY_DEFECT` flagged    | Non-deterministic test                 | Seed RNG, remove wall-clock timers               |
 
-### Level 4 — Visual
+### Level 4. Visual
 
 | Symptom                             | Likely Cause             | Action                                          |
 | ----------------------------------- | ------------------------ | ----------------------------------------------- |
@@ -209,7 +209,7 @@ jobs:
 | Entire screen differs               | HDR capture              | Disable HDR; SDR only                           |
 | Diff fails on one region            | Legitimate visual change | Review and update baseline if intentional       |
 
-### Level 5 — E2E
+### Level 5. E2E
 
 | Symptom                   | Likely Cause           | Action                          |
 | ------------------------- | ---------------------- | ------------------------------- |
@@ -251,16 +251,16 @@ Exit codes:
 
 ## 9. Suite Health Metrics
 
-Track four metrics. They answer "is the suite healthy?" — not "is the team productive?" Metrics that reward writing tests distort the suite; metrics that describe it keep it useful.
+Track four metrics. They answer "is the suite healthy?", not "is the team productive?" Metrics that reward writing tests distort the suite; metrics that describe it keep it useful.
 
 ### 9.1 Suite Duration Budget
 
 | Level           | Budget   | Enforcement    |
 | --------------- | -------- | -------------- |
-| 1 — Static      | < 30s    | CI job timeout |
-| 2 & 3 — GdUnit4 | < 5 min  | CI job timeout |
-| 4 — Visual      | < 5 min  | CI job timeout |
-| 5 — E2E         | < 30 min | CI job timeout |
+| 1. Static      | < 30s    | CI job timeout |
+| 2 & 3. GdUnit4 | < 5 min  | CI job timeout |
+| 4. Visual      | < 5 min  | CI job timeout |
+| 5. E2E         | < 30 min | CI job timeout |
 
 A suite that exceeds its budget MUST be optimized before new tests are added. Slow suites get skipped by developers; skipped suites catch nothing.
 
@@ -277,7 +277,7 @@ Quarantine is a temporary state. A quarantined test that is not fixed within one
 
 - **Level 2 deterministic logic:** 100% branch coverage REQUIRED
 - **Levels 3–5:** no numeric target
-- **Why:** coverage percentages reward trivial tests. Scope-completeness — every character, every menu, every golden path — rewards the tests that actually catch bugs.
+- **Why:** coverage percentages reward trivial tests. Scope-completeness (every character, every menu, every golden path) rewards the tests that actually catch bugs.
 
 The Level 2 floor is enforced by GdUnit4's coverage report. Levels 3–5 are reviewed qualitatively at milestone gates.
 

@@ -5,7 +5,7 @@
 **Status:** Tutorial
 **Companion documents:** [03 Implementation Guide](03-implementation-guide.md), [04 CI/CD & Tooling Reference](04-ci-cd-tooling-reference.md)
 
-> Welcome. This document gets you from `git clone` to a passing test in under 30 minutes. It assumes no prior experience with the testing framework. For normative rules, see [02 Technical Testing Standard](02-technical-testing-standard.md).
+> Welcome. This document gets you from `git clone` to a passing test in about half an hour. It assumes no prior experience with the testing framework. For normative rules, see [02 Technical Testing Standard](02-technical-testing-standard.md).
 
 ---
 
@@ -39,17 +39,17 @@ The `-a` flag runs all tests in the specified path. Replace `res://tests` with a
 ### 1.3 Run the E2E Suite (optional)
 
 ```bash
-# Terminal 1 — start the game with the driver
+# Terminal 1: start the game with the driver
 godot --test-driver
 
-# Terminal 2 — run Gherkin scenarios
+# Terminal 2: run Gherkin scenarios
 cd test/
 npx cucumber-js features/ --require support/
 ```
 
 ---
 
-## 2. Tutorial 1 — Your First Unit Test (5 minutes)
+## 2. Tutorial 1. Your First Unit Test (5 minutes)
 
 ### 2.1 The Code Under Test
 
@@ -93,7 +93,7 @@ In the GdUnit4 panel, click the play icon next to your test file. Both tests sho
 
 ---
 
-## 3. Tutorial 2 — Your First Scene Test (10 minutes)
+## 3. Tutorial 2. Your First Scene Test (10 minutes)
 
 ### 3.1 Add a `test_id` to a Button
 
@@ -130,7 +130,7 @@ Run the test. If it passes, you have verified a real scene with real input.
 
 ---
 
-## 4. Tutorial 3 — Your First E2E Scenario (5 minutes)
+## 4. Tutorial 3. Your First E2E Scenario (5 minutes)
 
 ### 4.1 Write the Gherkin
 
@@ -204,7 +204,7 @@ var node := Node.new()
 var node := auto_free(Node.new())
 ```
 
-`auto_free()` tells GdUnit4 to free the node after the test. Manual `queue_free()` in teardown is forbidden — it leaks across tests. GdUnit4 reports orphans with full stack traces via `collect_orphan_node_details()`, so you can pinpoint exactly where the leak occurred.
+`auto_free()` tells GdUnit4 to free the node after the test. Manual `queue_free()` in teardown is forbidden; it leaks across tests. GdUnit4 reports orphans with full stack traces via `collect_orphan_node_details()`, so you can pinpoint exactly where the leak occurred.
 
 ### "Why does my click test pass locally but fail in headless CI?"
 

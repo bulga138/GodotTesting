@@ -2,7 +2,7 @@
 
 **Document ID:** 02
 **Audience:** Core engine developers, framework maintainers, QA automation engineers
-**Status:** NORMATIVE — single source of truth
+**Status:** NORMATIVE: single source of truth
 **Companion documents:** All other documents in `docs/testing/`
 
 > **This is the only normative document in the suite.** It uses RFC-style keywords:
@@ -61,7 +61,7 @@ Raising the GdUnit4 version **MUST** be accompanied by raising the project engin
 
 ## 3. Determinism & Isolation Policies
 
-### Policy 1 — Absolute State Cleansing Between Scenarios
+### Policy 1. Absolute State Cleansing Between Scenarios
 
 Prior to every E2E scenario, the harness **MUST** invoke `POST /reset`. The engine **MUST** execute the following sequence, dispatched to the main thread:
 
@@ -69,19 +69,19 @@ Prior to every E2E scenario, the harness **MUST** invoke `POST /reset`. The engi
 2. Disconnect all active signal observers.
 3. Restore `Engine.time_scale = 1.0` and `get_tree().paused = false`.
 4. Reset the `GameState` autoload to its initial property values.
-5. Load the main scene via `change_scene_to_file()` — **NOT** `reload_current_scene()`.
+5. Load the main scene via `change_scene_to_file()`, **NOT** `reload_current_scene()`.
 6. Kill all running SceneTree tweens via `get_tree().get_processed_tweens()`.
 7. Flush unhandled input via `Input.flush_buffered_events()`.
 8. Wait until `is_node_ready()` is `true` on the new scene, bounded at 5 seconds. On timeout, return `504 SCENE_READY_TIMEOUT`.
 
-### Policy 2 — Deep Duplication on Resource Mutation
+### Policy 2. Deep Duplication on Resource Mutation
 
 - Godot's `ResourceLoader` caches disk-backed `.tres` files indefinitely while memory references persist. There is no public API to clear this cache.
 - Any test that mutates a loaded resource **MUST** call `res.duplicate(true)` first.
 - Shallow `.duplicate()` is **PROHIBITED** when the resource contains nested sub-resources.
 - **PackedScene exception:** Per godot#108220, `duplicate(true)` on a resource containing an exported `PackedScene` with a `class_name` script throws an assertion because the Script subresource cannot be duplicated (flagged `PROPERTY_USAGE_NEVER_DUPLICATE`). Affected resources **MUST** be handled by shallow duplication plus separate scene instantiation and reference re-assignment.
 
-### Policy 3 — Headless Input Delivery vs. Effect
+### Policy 3. Headless Input Delivery vs. Effect
 
 - `Input.parse_input_event()` does not pump the OS queue under `--headless`.
 - **Dual-path routing contract:**
@@ -89,7 +89,7 @@ Prior to every E2E scenario, the harness **MUST** invoke `POST /reset`. The engi
   - Global untargeted requests **MUST** use `Input.parse_input_event()` followed immediately by `Input.flush_buffered_events()`.
 - **Delivery vs. effect invariant:** `flush_buffered_events()` delivers events into `_input()` and updates `Input` action states. Handlers in `_physics_process()` and `_unhandled_input()` execute on the _subsequent_ engine tick. Tests **MUST** advance at least one frame before asserting side effects.
 
-### Policy 4 — Headless Root-Size Initialization
+### Policy 4. Headless Root-Size Initialization
 
 Under `--headless`, the driver **MUST** enforce project settings:
 
@@ -98,13 +98,13 @@ Under `--headless`, the driver **MUST** enforce project settings:
 
 This guarantees `/ui/layout` bounds evaluate against the intended resolution.
 
-### Policy 5 — Zero Orphan Node Tolerance
+### Policy 5. Zero Orphan Node Tolerance
 
 - Orphan detection is enabled by default in GdUnit4.
 - CI **MUST** fail on any orphan node warning.
 - All test nodes **MUST** be registered via `auto_free()`.
 
-### Policy 6 — Flake Detection over Flake Masking
+### Policy 6. Flake Detection over Flake Masking
 
 - GdUnit4 defaults to 3 retries in its settings, which can silently mask non-deterministic race conditions.
 - CI **MUST** override this to `retries: 1` via the GitHub Action input or `GdUnitRunner.cfg`.
