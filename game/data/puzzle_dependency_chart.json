@@ -1,0 +1,9 @@
+{
+  "initial_state": "start",
+  "endings": ["win"],
+  "nodes": {
+    "start": [],
+    "coin_collected": ["start"],
+    "win": ["coin_collected"]
+  }
+}

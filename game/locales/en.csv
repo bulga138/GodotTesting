@@ -1,0 +1,5 @@
+key,en,es
+game_title,Testing Demo,Demo de Pruebas
+score_label,Coins: {count} / {total},Monedas: {count} / {total}
+win_message,You win! All {total} coins collected.,Ganaste. Recogiste las {total} monedas.
+paused_label,Paused (Esc to resume),Pausa (Esc para continuar)

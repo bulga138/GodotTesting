@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="refresh" content="60">
+<link rel="icon" href="data:,">
+<title>Testing Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&family=Lora:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #000000;
+    --ink-soft: #1a1a1a;
+    --link: #057dbc;
+    --canvas: #ffffff;
+    --canvas-soft: #f5f5f5;
+    --hairline: #e0e0e0;
+    --body: #757575;
+    --pass: #22c55e;
+    --fail: #ef4444;
+    --muted: #9ca3af;
+  }
+  [data-theme="dark"] {
+    --ink: #ffffff;
+    --ink-soft: #e0e0e0;
+    --link: #5ba3d9;
+    --canvas: #0b0f14;
+    --canvas-soft: #161b22;
+    --hairline: #21262d;
+    --body: #8b949e;
+    --pass: #3fb950;
+    --fail: #f85149;
+    --muted: #6e7681;
+  }
+
+  /* ── Reset ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: var(--canvas);
+    color: var(--ink);
+    padding: 0;
+    transition: background 0.2s, color 0.2s;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Masthead Band ── */
+  .masthead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 48px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .masthead-wordmark {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: -0.3px;
+  }
+  .masthead-nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .meta-text {
+    color: var(--body);
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.4px;
+  }
+
+  /* ── Theme Toggle (button-primary style) ── */
+  .theme-toggle {
+    background: var(--ink);
+    color: var(--canvas);
+    border: none;
+    padding: 12px 20px;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    border-radius: 0;
+    transition: opacity 0.15s;
+  }
+  .theme-toggle:hover { opacity: 0.85; }
+
+  /* ── Hero Band ── */
+  .hero {
+    padding: 48px 48px 40px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 64px;
+    font-weight: 400;
+    line-height: 59.5px;
+    letter-spacing: -0.5px;
+    text-wrap: balance;
+  }
+
+  /* ── Content ── */
+  .content { padding: 0 48px; }
+
+  /* ── Focal (story-card-large pattern) ── */
+  .focal {
+    display: flex;
+    align-items: center;
+    gap: 48px;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .focal svg {
+    width: 200px;
+    height: 200px;
+    flex-shrink: 0;
+  }
+  .focal-text h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 35.2px;
+    letter-spacing: -0.3px;
+    margin-bottom: 8px;
+    text-wrap: balance;
+  }
+  .focal-text p {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.09px;
+    color: var(--body);
+  }
+  .big {
+    fill: var(--ink);
+    font-family: 'Inter', sans-serif;
+    font-size: 40px;
+    font-weight: 700;
+  }
+  .mid {
+    fill: var(--body);
+    font-family: 'Inter', sans-serif;
+    font-size: 22px;
+  }
+
+  /* ── Section Eyebrows ── */
+  .section-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--ink);
+    padding: 32px 0 16px;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  /* ── Story Rows ── */
+  ul {
+    list-style: none;
+    max-width: 960px;
+  }
+  .check {
+    display: grid;
+    grid-template-columns: 180px 280px 1fr;
+    gap: 16px;
+    align-items: baseline;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .state {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .check.pass .state { color: var(--pass); }
+  .check.fail .state { color: var(--fail); }
+  .check.unconfigured .state { color: var(--muted); }
+  .name {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    line-height: 22px;
+    letter-spacing: -0.144px;
+  }
+  .detail {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.09px;
+    color: var(--body);
+    overflow-wrap: anywhere;
+  }
+
+  /* ── Footer ── */
+  footer {
+    background: var(--ink);
+    color: var(--canvas);
+    padding: 48px;
+    margin-top: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-wordmark {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 26px;
+    font-weight: 400;
+  }
+  .footer-meta {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.4px;
+    opacity: 0.6;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .masthead { padding: 12px 20px; }
+    .hero { padding: 32px 20px; }
+    h1 { font-size: 40px; line-height: 42px; }
+    .content { padding: 0 20px; }
+    .focal { flex-direction: column; gap: 24px; }
+    .focal svg { width: 160px; height: 160px; }
+    .check { grid-template-columns: 1fr; gap: 8px; }
+    footer { padding: 32px 20px; flex-direction: column; gap: 12px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <span class="masthead-wordmark">GodotTesting</span>
+  <div class="masthead-nav">
+    <span class="meta-text">Generated <time datetime="2026-09-10T20:52:10+02:00">2026-09-10 20:52:10</time> &middot; auto-refreshes every 60s</span>
+    <button class="theme-toggle" id="themeToggle">Dark</button>
+  </div>
+</div>
+
+<div class="hero">
+  <p class="eyebrow">Quality Dashboard</p>
+  <h1>All checks passing</h1>
+</div>
+
+<div class="content">
+
+  <section class="focal">
+    <svg viewBox="0 0 200 200" role="img" aria-label="4 of 4 checks passing">
+      <circle cx="100" cy="100" r="80" fill="none" stroke="var(--hairline)" stroke-width="18"/>
+      <circle cx="100" cy="100" r="80" fill="none" stroke="var(--pass)" stroke-width="18"
+        stroke-dasharray="502.6544" stroke-dashoffset="0.0" stroke-linecap="round"
+        transform="rotate(-90 100 100)"/>
+      <text x="100" y="95" text-anchor="middle" class="big">4/4</text>
+      <text x="100" y="125" text-anchor="middle" class="mid">100%</text>
+    </svg>
+    <div class="focal-text">
+      <h2>4 of 4 automated checks green</h2>
+      <p>Unconfigured levels are listed below; they are not counted as green.</p>
+    </div>
+  </section>
+
+  <h3 class="section-title">Automated Checks</h3>
+  <ul>
+    <li class="check pass">
+      <span class="state">Pass</span>
+      <span class="name">Level 1 &middot; Locales</span>
+      <span class="detail">All locale keys present, expansion within limits</span>
+    </li>
+    <li class="check pass">
+      <span class="state">Pass</span>
+      <span class="name">Level 1 &middot; Resource mutations</span>
+      <span class="detail">No cached-resource mutations in tests</span>
+    </li>
+    <li class="check pass">
+      <span class="state">Pass</span>
+      <span class="name">Level 1 &middot; Puzzle DAG</span>
+      <span class="detail">PDC OK: all endings reachable, no cycles</span>
+    </li>
+    <li class="check pass">
+      <span class="state">Pass</span>
+      <span class="name">Level 1 &middot; Project import</span>
+      <span class="detail">Project imports cleanly</span>
+    </li>
+  </ul>
+
+  <h3 class="section-title">Not Configured Yet</h3>
+  <ul>
+    <li class="check unconfigured">
+      <span class="state">Not configured</span>
+      <span class="name">Level 2/3 &middot; GdUnit4 suites</span>
+      <span class="detail">Install the GdUnit4 addon per docs/testing/04 to enable</span>
+    </li>
+    <li class="check unconfigured">
+      <span class="state">Not configured</span>
+      <span class="name">Level 4 &middot; Visual baselines</span>
+      <span class="detail">Capture baselines per docs/testing/03, section 5</span>
+    </li>
+    <li class="check unconfigured">
+      <span class="state">Not configured</span>
+      <span class="name">Level 5 &middot; E2E BDD</span>
+      <span class="detail">Install godot-test-driver + cucumber-js per docs/testing/04</span>
+    </li>
+  </ul>
+
+</div>
+
+<footer>
+  <span class="footer-wordmark">GodotTesting</span>
+  <span class="footer-meta">Quality Dashboard &middot; Auto-refreshes every 60s</span>
+</footer>
+
+<script>
+  const toggle = document.getElementById('themeToggle');
+  const root = document.documentElement;
+
+  function setTheme(dark) {
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    toggle.textContent = dark ? 'Light' : 'Dark';
+    localStorage.setItem('wired-theme', dark ? 'dark' : 'light');
+  }
+
+  toggle.addEventListener('click', () => {
+    setTheme(root.getAttribute('data-theme') !== 'dark');
+  });
+
+  const saved = localStorage.getItem('wired-theme');
+  if (saved) {
+    setTheme(saved === 'dark');
+  } else {
+    setTheme(window.matchMedia('(prefers-color-scheme: dark)').matches);
+  }
+</script>
+
+</body>
+</html>
