@@ -26,7 +26,10 @@ GREY = "#6b7280"
 
 
 def run(cmd: list, cwd: Path) -> tuple:
-    proc = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
+    try:
+        proc = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
+    except FileNotFoundError:
+        return False, f"Binary not found: {cmd[0]}"
     detail = ANSI.sub("", proc.stdout + proc.stderr).strip()[-400:]
     return proc.returncode == 0, detail
 
