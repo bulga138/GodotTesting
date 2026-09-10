@@ -51,7 +51,7 @@ python game/tools/ci/generate_report.py --godot godot
 Reference implementations of the patterns in the docs. They require:
 
 - **GdUnit4** for unit and integration tests (Document 04 covers setup)
-- **godot-test-driver** + **cucumber-js** for E2E BDD tests
+- **@godriver** + **cucumber-js** for E2E BDD tests
 
 Install per the [CI/CD & Tooling Reference](docs/testing/04-ci-cd-tooling-reference.md).
 

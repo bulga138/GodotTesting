@@ -200,7 +200,7 @@ def main() -> int:
     checks.append({
         "name": "Level 5. E2E BDD",
         "state": "unconfigured",
-        "detail": "Install godot-test-driver + cucumber-js per docs/testing/04",
+        "detail": "Install @godriver + cucumber-js per docs/testing/04",
     })
 
     now = datetime.datetime.now().astimezone()

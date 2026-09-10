@@ -1,4 +1,4 @@
-# Level 5 reference feature. Requires godot-test-driver + cucumber-js (docs/testing/03, section 6).
+# Level 5 reference feature. Requires @godriver + cucumber-js (docs/testing/03, section 6).
 Feature: Coin collection
   The player collects every coin in the arena.
 

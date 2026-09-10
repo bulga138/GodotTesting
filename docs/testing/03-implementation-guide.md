@@ -29,7 +29,7 @@ project/
 │       ├── audit_locales.py     ← Localization QA (Level 1)
 │       └── audit_resource_mutations.py
 └── addons/
-    └── godot-test-driver/       ← E2E driver addon
+    └── godriver/                ← E2E driver addon
 ```
 
 ---

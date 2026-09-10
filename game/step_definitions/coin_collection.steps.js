@@ -1,5 +1,5 @@
 // Level 5: step definitions for features/coin_collection.feature.
-// Requires godot-test-driver + cucumber-js (docs/testing/03, section 6).
+// Requires @godriver + cucumber-js (docs/testing/03, section 6).
 import { Given, When, Then } from '@cucumber/cucumber';
 import { MainScreen } from '../screens/MainScreen.js';
 

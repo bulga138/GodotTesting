@@ -1,5 +1,5 @@
 // Level 5: base class for Screen Objects (docs/testing/03, section 6.1).
-// Requires the godot-test-driver addon at runtime.
+// Requires the @godriver addon at runtime.
 export class BaseScreen {
   constructor(driver) {
     this.driver = driver;
