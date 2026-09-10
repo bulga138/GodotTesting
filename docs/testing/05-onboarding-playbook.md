@@ -5,7 +5,7 @@
 **Status:** Tutorial
 **Companion documents:** [03 Implementation Guide](03-implementation-guide.md), [04 CI/CD & Tooling Reference](04-ci-cd-tooling-reference.md)
 
-> Welcome. This document gets you from `git clone` to a passing test in about half an hour. It assumes no prior experience with the testing framework. For normative rules, see [02 Technical Testing Standard](02-technical-testing-standard.md).
+> Welcome. This document gets you from `git clone` to a running test in about half an hour. It assumes no prior experience with the testing framework. For normative rules, see [02 Technical Testing Standard](02-technical-testing-standard.md).
 
 ---
 
@@ -14,48 +14,72 @@
 ### 1.1 Clone and Open
 
 ```bash
-git clone <repo-url>
-cd <project>
+git clone https://github.com/bulga138/GodotTesting.git
+cd GodotTesting/game
 ```
 
-Open the project in Godot 4.5 or later. The `gdUnit4` addon is already in `addons/`.
+Open the `game/` folder in Godot 4.7 or later. The project name is "Testing Demo".
 
-### 1.2 Run Existing Tests Locally
+### 1.2 Run the Demo
 
-From the Godot editor:
+Press **F5** in the editor. You get a coin collector: move the character with arrow keys, collect 8 coins, press Escape to pause/unpause.
 
-1. Open the **GdUnit4** panel at the bottom of the screen.
-2. Click **Run All**.
-3. All green means your environment is working.
+### 1.3 Install GdUnit4 (for Level 2/3 tests)
 
-From the CLI:
-
-```bash
-godot --headless --path . -s addons/gdUnit4/bin/GdUnitCmdTool.gd -a res://tests
-```
-
-The `-a` flag runs all tests in the specified path. Replace `res://tests` with a narrower path (e.g., `res://tests/unit`) to run a subset.
-
-### 1.3 Run the E2E Suite (optional)
-
-```bash
-# Terminal 1: start the game with the driver
-godot --test-driver
-
-# Terminal 2: run Gherkin scenarios
-cd test/
-npx cucumber-js features/ --require support/
-```
+The unit and integration tests require the GdUnit4 addon. See [04 CI/CD & Tooling Reference](04-ci-cd-tooling-reference.md) for installation. Without it, the Level 1 checks still run.
 
 ---
 
-## 2. Tutorial 1. Your First Unit Test (5 minutes)
+## 2. Level 1 Checks (no addon required)
 
-### 2.1 The Code Under Test
+These run with just Python and Godot. No GdUnit4 needed.
 
-Create `res://src/inventory/Inventory.gd`:
+### 2.1 Locale Audit
+
+```bash
+cd game
+python tools/ci/audit_locales.py --source locales/en.csv --target locales/ --max-expansion 1.35
+```
+
+Checks that every locale key exists and translation expansion stays within 35% of English.
+
+### 2.2 Resource Mutation Audit
+
+```bash
+cd game
+python tools/ci/audit_resource_mutations.py
+```
+
+Scans test files for direct `.resource` or `.tres` writes that would corrupt cached resources.
+
+### 2.3 Puzzle DAG Solver
+
+```bash
+cd game
+godot --headless --path . --script res://tools/pdc_solver.gd
+```
+
+Verifies all game endings are reachable and no dead-end cycles exist in the puzzle graph.
+
+### 2.4 Generate Dashboard
+
+```bash
+cd game
+python tools/ci/generate_report.py --godot godot --out ../reports/dashboard.html
+```
+
+Runs all Level 1 checks and renders `reports/dashboard.html` with pass/fail status.
+
+---
+
+## 3. Tutorial 1. Your First Unit Test (5 minutes)
+
+### 3.1 The Code Under Test
+
+The project includes an `Inventory` class used by the coin collector:
 
 ```gdscript
+# game/scripts/inventory.gd (autoloaded or referenced in game.gd)
 class_name Inventory
 extends RefCounted
 
@@ -68,129 +92,88 @@ func count(item: String) -> int:
     return items.get(item, 0)
 ```
 
-### 2.2 The Test
+### 3.2 The Test
 
-Create `res://tests/unit/test_inventory.gd`:
-
-```gdscript
-extends GdUnitTestSuite
-
-func test_add_increases_count() -> void:
-    var inv := Inventory.new()
-    inv.add("wrench", 3)
-    assert_int(inv.count("wrench")).is_equal(3)
-
-func test_add_twice_accumulates() -> void:
-    var inv := Inventory.new()
-    inv.add("wrench", 3)
-    inv.add("wrench", 2)
-    assert_int(inv.count("wrench")).is_equal(5)
-```
-
-### 2.3 Run It
-
-In the GdUnit4 panel, click the play icon next to your test file. Both tests should pass.
-
----
-
-## 3. Tutorial 2. Your First Scene Test (10 minutes)
-
-### 3.1 Add a `test_id` to a Button
-
-1. Open your scene in the editor.
-2. Select a Button node.
-3. In the Inspector, scroll to **Metadata**.
-4. Add `test_id` = `"start_button"`.
-
-No script needed. The E2E driver finds it by metadata.
-
-### 3.2 Write a SceneRunner Test
-
-Create `res://tests/integration/test_start_button.gd`:
+The project already has `game/tests/unit/test_inventory_rules.gd`:
 
 ```gdscript
 extends GdUnitTestSuite
 
-func test_start_button_emits_signal_when_pressed() -> void:
-    var runner := scene_runner("res://scenes/main_menu.tscn")
-    var button := runner.find_child("StartButton") as Button
-
-    runner.simulate_action_press("ui_accept")
-    await runner.await_input_processed()
-    await runner.simulate_frames(1)
-
-    await runner.await_signal_on(button, "pressed", [], 1000)
+func test_stacking_two_partial_stacks_merges() -> void:
+    var inv := Inventory.new()
+    inv.add("coin", 3)
+    inv.add("coin", 2)
+    assert_int(inv.count("coin")).is_equal(5)
 ```
-
-`runner.find_child()` searches the runner's scene for the named node. `await_signal_on()` waits for a signal emitted by a specific source node within a timeout.
 
 ### 3.3 Run It
 
-Run the test. If it passes, you have verified a real scene with real input.
+In the GdUnit4 panel, click the play icon next to `test_inventory_rules.gd`. All three tests should pass.
+
+From the CLI:
+
+```bash
+cd game
+godot --headless --path . -s addons/gdUnit4/bin/GdUnitCmdTool.gd -a res://tests/unit
+```
 
 ---
 
-## 4. Tutorial 3. Your First E2E Scenario (5 minutes)
+## 4. Tutorial 2. Your First Scene Test (10 minutes)
 
-### 4.1 Write the Gherkin
+### 4.1 The Test
 
-Create `test/features/start_game.feature`:
+The project has `game/tests/integration/test_player_movement.gd`:
 
-```gherkin
-Feature: Start a new game
+```gdscript
+extends GdUnitTestSuite
 
-  Scenario: Player can start a new game from the main menu
-    Given the game is running
-    When I click the element with test_id "start_button"
-    Then the current scene should be "Workshop"
+func test_character_horizontal_run_matches_velocity() -> void:
+    var runner := scene_runner("res://tests/fixtures/movement_test_map.tscn")
+    var player := runner.find_child("Player") as CharacterBody2D
+
+    runner.simulate_action_press("move_right")
+    await runner.await_input_processed()
+    await runner.simulate_frames(10)
+
+    assert_float(player.velocity.x).is_greater(150.0)
 ```
-
-> **Note:** Steps such as `When I click the element with test_id "..."` and `Then the current scene should be "..."` are provided out of the box by `@godriver/cucumber`. No custom JavaScript step definitions are required for basic navigation and verification.
 
 ### 4.2 Run It
 
 ```bash
-cd test/
-npx cucumber-js features/start_game.feature --require support/
+cd game
+godot --headless --path . -s addons/gdUnit4/bin/GdUnitCmdTool.gd -a res://tests/integration
 ```
 
-If the scenario passes, you have driven the real game from outside.
-
-### 4.3 What Just Happened
-
-1. Cucumber.js loaded the feature file.
-2. The `Before` hook called `POST /reset` to clean the game.
-3. The pre-built step `I click the element with test_id "start_button"` sent `POST /input/click`.
-4. The step waited one frame.
-5. The assertion sent `GET /scene/current` and verified the scene name.
-
-### 4.4 Using Screen Objects for Complex Flows
-
-Rather than scripting raw UI clicks across multiple rooms, group operations into reusable Screen Objects extending `BaseScreen.js`:
-
-```javascript
-// screens/KitchenScreen.js
-import { BaseScreen } from './BaseScreen.js';
-
-export class KitchenScreen extends BaseScreen {
-  async depositTheremin() {
-    await this.click('test_id:dumbwaiter_door');
-    await this.click('test_id:inv_theremin');
-    await this.click('test_id:dumbwaiter_send');
-    await this.waitForSignal('dumbwaiter_sent', 5000);
-  }
-
-  async assertGhoulStunned() {
-    await this.driver.assertProperty('test_id:ghoul', 'is_stunned', true, { timeout: 3000 });
-  }
-}
-```
-
-Call these Screen Objects inside your step definitions to keep your Gherkin scenarios declarative and resilient to layout changes.
+The pause menu test verifies that pressing Escape toggles `get_tree().paused` correctly.
 
 ---
 
-## 5. Troubleshooting Cookbook
+## 5. Tutorial 3. Your First E2E Scenario (5 minutes)
+
+### 5.1 Project Structure
+
+E2E tests live in `game/`:
+
+- `features/` - Gherkin feature files
+- `step_definitions/` - JavaScript step definitions
+- `screens/` - Screen Object wrappers
+
+### 5.2 Run It
+
+```bash
+cd game
+# Terminal 1: start the game with the driver
+godot --test-driver
+
+# Terminal 2: run Gherkin scenarios
+npx cucumber-js features/ --require support/
+```
+
+---
+
+## 6. Troubleshooting Cookbook
 
 ### "Why did my test fail with `ORPHAN_NODE_DETECTED`?"
 
@@ -204,7 +187,7 @@ var node := Node.new()
 var node := auto_free(Node.new())
 ```
 
-`auto_free()` tells GdUnit4 to free the node after the test. Manual `queue_free()` in teardown is forbidden; it leaks across tests. GdUnit4 reports orphans with full stack traces via `collect_orphan_node_details()`, so you can pinpoint exactly where the leak occurred.
+`auto_free()` tells GdUnit4 to free the node after the test. Manual `queue_free()` in teardown is forbidden; it leaks across tests.
 
 ### "Why does my click test pass locally but fail in headless CI?"
 
@@ -221,14 +204,6 @@ Check three things:
 2. **Did the UI genuinely change?** If yes, review and update the baseline intentionally.
 3. **Is a volatile element in the frame?** Timers, FPS counters, and clocks must be excluded via mask.
 
-### "How do I update an approved visual baseline?"
-
-```bash
-UPDATE_BASELINE=true npx cucumber-js features/visual/
-```
-
-Then commit the new PNGs and `BASELINE_DRIVER` file. Every update must be reviewed by art direction before merging.
-
 ### "My E2E test times out. Where do I look?"
 
 1. Check the JUnit XML artifact in CI.
@@ -237,7 +212,7 @@ Then commit the new PNGs and `BASELINE_DRIVER` file. Every update must be review
 
 ---
 
-## 6. Where to Go Next
+## 7. Where to Go Next
 
 | If you want to...           | Read...                                                           |
 | --------------------------- | ----------------------------------------------------------------- |
@@ -248,9 +223,9 @@ Then commit the new PNGs and `BASELINE_DRIVER` file. Every update must be review
 
 ---
 
-## 7. Getting Help
+## 8. Getting Help
 
-- For framework issues: check the GdUnit4 documentation or open an issue.
+- For GdUnit4 issues: check the GdUnit4 documentation or open an issue.
 - For `@godriver` issues: see `spec/SPEC.md` for the HTTP contract.
 - For CI issues: see the failure triage guide in [04 CI/CD & Tooling Reference](04-ci-cd-tooling-reference.md).
 
