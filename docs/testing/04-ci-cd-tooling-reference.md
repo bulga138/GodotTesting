@@ -131,11 +131,13 @@ jobs:
 | -------------------- | --------- | --------------------------- |
 | Godot                | 4.5       | Matches GdUnit4 v6.x floor  |
 | GdUnit4              | v6.x      | Pinned in `addons/gdUnit4/` |
-| Node.js              | 20 LTS    | For `@godriver/cucumber`    |
-| `@godriver/core`     | `0.1.x`   | Pinned in `package.json`    |
+| Node.js              | 24 LTS    | For `@godriver/cucumber`    |
+| `@godriver/core`     | `0.2.x`   | Pinned in `package.json`    |
 | `@godriver/cucumber` | `0.1.x`   | Pinned in `package.json`    |
-| `pixelmatch`         | `^5.x`    | MIT                         |
-| `sharp`              | `^0.33.x` | Apache 2.0                  |
+| `@godriver/visual`   | `0.1.x`   | Optional peer of cucumber   |
+| `@godriver/cli`      | `0.1.x`   | Watchdog runner             |
+| `pixelmatch`         | `7.2.0`   | MIT (pinned)                |
+| `sharp`              | `0.34.5`  | Apache 2.0 (pinned)         |
 
 ---
 
@@ -343,3 +345,5 @@ If the migration introduces more than 2 new failures that cannot be fixed within
 3. Schedule a dedicated migration sprint
 
 Do not merge a partially-migrated state. Half-migrated engines are worse than old engines.
+
+

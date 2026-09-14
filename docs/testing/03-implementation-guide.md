@@ -304,16 +304,37 @@ baselines/
 
 ### 5.3 Exclusion Masks
 
-For volatile elements (timers, FPS counters), define masks by `test_id`:
+For volatile elements (timers, FPS counters), define masks by rect or `test_id`-resolved rect. Masks are zeroed in BOTH images before diffing, so excluded regions never contribute:
 
 ```javascript
-await visual.compare('hud', {
-  mask: ['test_id:fps_counter', 'test_id:clock_display'],
+import { BaselineStore, assertMatchesBaseline } from '@godriver/visual';
+
+const store = new BaselineStore(); // baselines/ + artifacts/visual/
+await assertMatchesBaseline(store, 'hud', {
+  screenshot: driver.screenshot.bind(driver),
   threshold: 0.01,
+  exclude: {
+    rects: [{ x: 10, y: 10, w: 120, h: 24 }],
+    testIdRects: [], // rects resolved from test_id targets
+  },
 });
 ```
 
-### 5.4 Updating Baselines
+### 5.3a The Assertion Workflow (GTD-052)
+
+`assertMatchesBaseline` handles the full loop:
+
+- No baseline + `UPDATE_BASELINE=true`: writes `baselines/<name>.png` + `<name>.json` sidecar (`{driver, width, height, roi, exclude, updatedAt}`) and passes.
+- No baseline otherwise: throws `BaselineMissingError` with guidance.
+- Baseline + match: passes (writes diff artifacts only with `GODRIVER_DIFF_OUTPUT=1`).
+- Baseline + mismatch: writes `artifacts/visual/<name>/{actual,diff,report}.png|html` (self-contained HTML report) and throws `BaselineMismatchError` with the report path.
+
+Baselines are git-tracked; `artifacts/` is gitignored.
+
+### 5.3b Responsive Baselines (GTD-053)
+
+`POST /window/resize` (JS: `driver.resize(width, height, opts)`) changes the root window size at runtime, so one session can exercise multiple resolutions. Name baselines per resolution (`menu_1280x720.png`) since the comparator rejects size mismatches by default, and restore the original size afterwards (from `driver.windowState()`).
+
 
 Only update baselines intentionally:
 
@@ -391,7 +412,14 @@ Before(async function () {
 
 After(async function (scenario) {
   if (scenario.result.status === 'FAILED') {
-    await this.screenshot.capture(`failure-${scenario.pickle.name}`);
+    // Windowed runs only; /screenshot/* rejects headless (400
+    // HEADLESS_RENDERING_DISABLED). Write the PNG to artifacts/.
+    const shot = await this.driver.screenshot();
+    await mkdir('artifacts/failures', { recursive: true });
+    await writeFile(
+      `artifacts/failures/failure-${scenario.pickle.name}.png`,
+      Buffer.from(shot.buffer),
+    );
   }
 });
 ```
@@ -401,7 +429,7 @@ After(async function (scenario) {
 Assertions poll until a deadline (default 3000ms, interval 50–100ms):
 
 ```javascript
-await this.driver.assertVisible('test_id:main_menu', { timeout: 3000 });
+await this.driver.assertVisible('test_id:main_menu', { timeoutMs: 3000 });
 ```
 
 Never use `sleep()` or `await new Promise(r => setTimeout(r, n))` in step definitions.
@@ -502,7 +530,7 @@ await new Promise(r => setTimeout(r, 2000));
 await driver.assertVisible('test_id:main_menu');
 
 // RIGHT: auto-retry polls until deadline
-await driver.assertVisible('test_id:main_menu', { timeout: 3000 });
+await driver.assertVisible('test_id:main_menu', { timeoutMs: 3000 });
 ```
 
 ### A8. Testing Production Rooms
@@ -546,3 +574,6 @@ assert_bool(player.is_jumping)
 - Normative rules: [02 Technical Testing Standard](02-technical-testing-standard.md)
 - CI configuration: [04 CI/CD & Tooling Reference](04-ci-cd-tooling-reference.md)
 - First test tutorial: [05 Onboarding Playbook](05-onboarding-playbook.md)
+
+
+

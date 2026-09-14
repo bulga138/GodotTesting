@@ -5,7 +5,7 @@ import { MainScreen } from '../screens/MainScreen.js';
 
 Given('the game is running with RNG seeded to {int}', async function (seed) {
   await this.driver.reset();
-  await this.driver.seed(seed);
+  await this.driver.setSeed(seed);
   this.screen = new MainScreen(this.driver);
   await this.screen.assertVisible('score_label', { timeout: 3000 });
 });
@@ -20,3 +20,4 @@ Then(
     await this.driver.assertText(`test_id:${testId}`, expected, { timeout: 3000 });
   }
 );
+

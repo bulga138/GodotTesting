@@ -1,5 +1,6 @@
 // Level 5: base class for Screen Objects (docs/testing/03, section 6.1).
-// Requires the @godriver addon at runtime.
+// Requires the @godriver addon at runtime (vendored as addons/godriver) and
+// test_id metadata on the nodes under interaction.
 export class BaseScreen {
   constructor(driver) {
     this.driver = driver;
@@ -17,7 +18,8 @@ export class BaseScreen {
     await this.driver.type(`test_id:${testId}`, text);
   }
 
-  async waitForSignal(name, timeoutMs) {
-    await this.driver.waitForSignal(name, timeoutMs);
+  // Wait for a signal emitted by a node in the current scene.
+  async waitForSignal(name, timeoutMs, target = '/root/Main') {
+    await this.driver.waitSignal(target, name, { timeoutMs });
   }
 }

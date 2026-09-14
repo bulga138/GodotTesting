@@ -51,7 +51,7 @@ python game/tools/ci/generate_report.py --godot godot
 Reference implementations of the patterns in the docs. They require:
 
 - **GdUnit4** for unit and integration tests (Document 04 covers setup)
-- **@godriver** + **cucumber-js** for E2E BDD tests
+- **@godriver** (core 0.2.x + cucumber + optional visual) + **cucumber-js** for E2E BDD and visual regression tests
 
 Install per the [CI/CD & Tooling Reference](docs/testing/04-ci-cd-tooling-reference.md).
 
@@ -78,3 +78,4 @@ game/
 1. [05 Onboarding Playbook](docs/testing/05-onboarding-playbook.md): write your first test in about 30 minutes
 2. Open `game/` in the editor and read the scripts
 3. [02 Technical Testing Standard](docs/testing/02-technical-testing-standard.md) for the rules, [03 Implementation Guide](docs/testing/03-implementation-guide.md) for the recipes
+

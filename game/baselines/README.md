@@ -12,3 +12,23 @@ Suggested first captures for this demo:
 
 Never capture on a local GPU (anti-pattern A9). Every baseline update
 requires art direction review.
+
+## The GTD-052 workflow
+
+The recommended assertion path is `assertMatchesBaseline` from `@godriver/visual`:
+
+```javascript
+import { BaselineStore, assertMatchesBaseline } from '@godriver/visual';
+
+const store = new BaselineStore({ dir: 'baselines' });
+await assertMatchesBaseline(store, 'main_menu', {
+  screenshot: driver.screenshot.bind(driver),
+  threshold: 0.01,
+});
+```
+
+- `UPDATE_BASELINE=true` captures/regenerates `<name>.png` + `<name>.json` sidecar.
+- Mismatch writes `artifacts/visual/<name>/{actual,diff,report}.png|html` and throws with the report path.
+- Baselines are git-tracked; `artifacts/` is gitignored.
+- Screenshots require a windowed game (headless returns `400 HEADLESS_RENDERING_DISABLED`); use `xvfb` in CI.
+- Responsive testing: `driver.resize(w, h)` changes the root window at runtime; name baselines per resolution and restore afterwards.
