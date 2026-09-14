@@ -377,7 +377,10 @@ White-box caveat: writing a counter does not re-derive derived UI (a score label
 
 ### 6.1 Screen Objects
 
-Every screen gets a class extending `BaseScreen.js`:
+Every screen gets a class extending `BaseScreen.js`
+
+
+> Skeleton shortcut: godriver generate --out screens.generated.js (GTD-056) walks the live scene tree and emits a GameScreens class with generic helpers for every 	est_id node. Extend it with game-specific flows; re-run after scene changes.:
 
 ```javascript
 // screens/WorkshopScreen.js
@@ -584,6 +587,7 @@ assert_bool(player.is_jumping)
 - Normative rules: [02 Technical Testing Standard](02-technical-testing-standard.md)
 - CI configuration: [04 CI/CD & Tooling Reference](04-ci-cd-tooling-reference.md)
 - First test tutorial: [05 Onboarding Playbook](05-onboarding-playbook.md)
+
 
 
 

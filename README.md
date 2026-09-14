@@ -65,6 +65,9 @@ npm test
 npm run test:visual
 ```
 
+# 5. generate Screen Objects from the live scene tree
+node node_modules/@godriver/cli/bin/godriver.js generate --out screens.generated.js
+
 What the suites cover:
 
 - **E2E (`npm test`)**: coin collection driven by real input holds, and
@@ -102,4 +105,5 @@ game/
 1. [05 Onboarding Playbook](docs/testing/05-onboarding-playbook.md): write your first test in about 30 minutes
 2. Open `game/` in the editor and read the scripts
 3. [02 Technical Testing Standard](docs/testing/02-technical-testing-standard.md) for the rules, [03 Implementation Guide](docs/testing/03-implementation-guide.md) for the recipes
+
 
