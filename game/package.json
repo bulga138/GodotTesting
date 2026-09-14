@@ -11,7 +11,7 @@
   "dependencies": {
     "@cucumber/cucumber": "^10.0.0",
     "@godriver/core": "0.4.0",
-    "@godriver/cucumber": "0.1.0",
+    "@godriver/cucumber": "0.1.1",
     "@godriver/visual": "0.1.0"
   },
   "devDependencies": {
