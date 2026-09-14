@@ -10,11 +10,11 @@
   },
   "dependencies": {
     "@cucumber/cucumber": "^10.0.0",
-    "@godriver/core": "file:../../godot-test-driver/js/core",
-    "@godriver/cucumber": "^0.1.0",
-    "@godriver/visual": "^0.1.0"
+    "@godriver/core": "0.4.0",
+    "@godriver/cucumber": "0.1.0",
+    "@godriver/visual": "0.1.0"
   },
   "devDependencies": {
-    "@godriver/cli": "^0.1.0"
+    "@godriver/cli": "0.1.0"
   }
 }
