@@ -22,3 +22,4 @@ mono_crash.*.json
 # Godriver visual-regression artifacts (baselines are git-tracked)
 artifacts/
 
+node_modules/
