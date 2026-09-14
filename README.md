@@ -48,12 +48,38 @@ python game/tools/ci/generate_report.py --godot godot
 
 ## The Test Suites
 
-Reference implementations of the patterns in the docs. They require:
+The E2E and visual suites in `game/` are **runnable for real**: the godriver
+addon is vendored at `game/addons/godriver` (plus `godottpd`), the HUD nodes
+carry `test_id` metadata, and the steps drive the player with real input
+(`key_down`/`key_up` holds toward coin positions read through the API).
 
-- **GdUnit4** for unit and integration tests (Document 04 covers setup)
-- **@godriver** (core 0.2.x + cucumber + optional visual) + **cucumber-js** for E2E BDD and visual regression tests
+```bash
+# 1. install the JS tooling (published @godriver packages)
+cd game && npm install
 
-Install per the [CI/CD & Tooling Reference](docs/testing/04-ci-cd-tooling-reference.md).
+# 2. launch the game with the driver active (terminal 1)
+godot --path game -- --test-driver
+
+# 3. run the E2E suite (terminal 2)
+npm test
+
+# 4. visual regression (requires the WINDOWED game from step 2)
+npm run test:visual
+```
+
+What the suites cover:
+
+- **E2E (`npm test`)**: coin collection driven by real input holds, and
+  pause behavior - the driver keeps working while the game is paused
+  (the addon runs with `PROCESS_MODE_ALWAYS`), while PAUSABLE game nodes
+  freeze. Visibility is asserted via `/ui/layout` `visible_in_tree`.
+- **Visual (`npm run test:visual`)**: screenshot baseline of the arena
+  (`baselines/arena.png`, git-tracked). Mismatch writes a self-contained
+  HTML report under `artifacts/visual/` (gitignored). Recapture with
+  `UPDATE_BASELINE=true npm run test:visual`.
+
+Unit and integration tests (Levels 2-3) require **GdUnit4** (Document 04
+covers setup). Install per the [CI/CD & Tooling Reference](docs/testing/04-ci-cd-tooling-reference.md).
 
 ## Project Layout
 
@@ -78,4 +104,5 @@ game/
 1. [05 Onboarding Playbook](docs/testing/05-onboarding-playbook.md): write your first test in about 30 minutes
 2. Open `game/` in the editor and read the scripts
 3. [02 Technical Testing Standard](docs/testing/02-technical-testing-standard.md) for the rules, [03 Implementation Guide](docs/testing/03-implementation-guide.md) for the recipes
+
 

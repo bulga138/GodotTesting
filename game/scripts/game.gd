@@ -15,6 +15,9 @@ var score := 0
 
 
 func _ready() -> void:
+	# ALWAYS so _unhandled_input keeps receiving the pause toggle while the
+	# tree is paused; Player and coins are explicitly PAUSABLE and freeze.
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	seed(12345)  # A3: deterministic randomness
 	player.collected.connect(_on_collected)
 	for i in COIN_COUNT:
@@ -43,3 +46,6 @@ func _on_collected(total: int) -> void:
 
 func _update_score() -> void:
 	score_label.text = "Coins: %d / %d" % [score, COIN_COUNT]
+
+
+

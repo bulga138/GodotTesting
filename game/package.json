@@ -5,7 +5,7 @@
   "type": "module",
   "description": "E2E + visual regression reference tests for the GodotTesting demo (Cucumber.js + @godriver)",
   "scripts": {
-    "test": "cucumber-js --import step_definitions/world.js --import step_definitions/hooks.js --import step_definitions/coin_collection.steps.js --tags \"not @visual\"",
+    "test": "cucumber-js --import step_definitions/world.js --import step_definitions/hooks.js --import step_definitions/coin_collection.steps.js --import step_definitions/pause.steps.js --tags \"not @visual\"",
     "test:visual": "cucumber-js --import step_definitions/world.js --import step_definitions/hooks.js --import step_definitions/coin_collection.steps.js --import step_definitions/visual-steps.js --tags \"@visual\""
   },
   "dependencies": {
