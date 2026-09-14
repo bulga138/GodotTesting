@@ -4,7 +4,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 Before(async function () {
-  await this.driver.reset();
+  this.driver = await this.resetDriver();
 });
 
 After(async function (scenario) {
@@ -23,3 +23,4 @@ After(async function (scenario) {
     }
   }
 });
+

@@ -14,6 +14,10 @@ config/features=PackedStringArray("4.3")
 window/size/viewport_width=960
 window/size/viewport_height=540
 
+[autoload]
+
+Godriver="*res://addons/godriver/driver.gd"
+
 [input]
 
 move_left={
@@ -50,3 +54,4 @@ pause={
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+

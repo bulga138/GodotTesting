@@ -1,0 +1,20 @@
+{
+  "name": "godottesting-e2e",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "E2E + visual regression reference tests for the GodotTesting demo (Cucumber.js + @godriver)",
+  "scripts": {
+    "test": "cucumber-js --import step_definitions/world.js --import step_definitions/hooks.js --import step_definitions/coin_collection.steps.js --tags \"not @visual\"",
+    "test:visual": "cucumber-js --import step_definitions/world.js --import step_definitions/hooks.js --import step_definitions/coin_collection.steps.js --import step_definitions/visual-steps.js --tags \"@visual\""
+  },
+  "dependencies": {
+    "@cucumber/cucumber": "^10.0.0",
+    "@godriver/core": "^0.3.0",
+    "@godriver/cucumber": "^0.1.0",
+    "@godriver/visual": "^0.1.0"
+  },
+  "devDependencies": {
+    "@godriver/cli": "^0.1.0"
+  }
+}

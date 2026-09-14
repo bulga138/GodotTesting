@@ -46,21 +46,23 @@ shape = SubResource("wall_v")
 [node name="HUD" type="CanvasLayer" parent="."]
 
 [node name="ScoreLabel" type="Label" parent="HUD"]
-offset_left = 20.0
+metadata/test_id = "score_label"
 offset_top = 16.0
 offset_right = 400.0
 offset_bottom = 40.0
 text = "Coins: 0 / 8"
 
 [node name="PauseMenu" type="ColorRect" parent="HUD"]
-visible = false
+metadata/test_id = "pause_menu"
 offset_right = 960.0
 offset_bottom = 540.0
 color = Color(0, 0, 0, 0.6)
 
 [node name="PausedLabel" type="Label" parent="HUD/PauseMenu"]
+metadata/test_id = "paused_label"
 anchor_right = 1.0
 anchor_bottom = 1.0
 text = "Paused (Esc to resume)"
 horizontal_alignment = 1
 vertical_alignment = 1
+
