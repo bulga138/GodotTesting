@@ -36,7 +36,7 @@ Validate like CI would (headless import check):
 godot --headless --path game --import
 ```
 
-## Quality Dashboard
+## Status`n`nSee [docs/STATUS.md](docs/STATUS.md) for the current state of every suite and recent changes.`n`n## Quality Dashboard
 
 `reports/dashboard.html` shows the status of every automated check: green for passing, grey for not yet configured. Auto-refreshes every 60 seconds. Runs in-browser with no server required. Toggle between light and dark themes.
 
@@ -104,5 +104,6 @@ game/
 1. [05 Onboarding Playbook](docs/testing/05-onboarding-playbook.md): write your first test in about 30 minutes
 2. Open `game/` in the editor and read the scripts
 3. [02 Technical Testing Standard](docs/testing/02-technical-testing-standard.md) for the rules, [03 Implementation Guide](docs/testing/03-implementation-guide.md) for the recipes
+
 
 

@@ -365,6 +365,16 @@ Visual regression catches unintended _changes_; accessibility checks catch _unus
 
 ## 6. Level 5. E2E BDD
 
+### 6.0 Arranging Game State (GTD-055)
+
+Tests rarely want to replay the whole flow to reach a moment. Two complementary patterns - the demo implements both:
+
+**Pattern A - black-box (no game changes):** drive the real flow with input. The coin-collection suite (`features/coin_collection.feature`) moves the player with `key_down`/`key_up` holds toward coin positions read through the API. Works on any game, slower, exercises the real path end to end.
+
+**Pattern B - white-box seeding via property writes:** `POST /node/<path>/property/<name>` (JS: `driver.setProperty`) writes any node property with §4-decoded, type-coerced values. Use it to teleport (`Player.position`) and to deliver state. To keep the normal flow intact, prefer delivering objects to the player over writing counters: the state-seeding suite (`features/state_seeding.feature`) teleports the player to the top right, then moves 5 coins onto the player so the game's OWN pickup logic runs - score, label, and signals update through the real code path, and the remaining 3 coins are collected with real input.
+
+White-box caveat: writing a counter does not re-derive derived UI (a score label only updates on real pickup) - write the state and the derived label, or arrange through the flow like Pattern B does.
+
 ### 6.1 Screen Objects
 
 Every screen gets a class extending `BaseScreen.js`:
